@@ -1,0 +1,45 @@
+# All other flavors inherit the `common' config snippet
+common: &common
+    # Default log level is info
+    loglevel: _env:LOGLEVEL:info
+    # By default, the registry acts standalone (eg: doesn't query the index)
+    standalone: _env:STANDALONE:true
+    # The default endpoint to use (if NOT standalone) is index.docker.io
+    index_endpoint: _env:INDEX_ENDPOINT:https://index.docker.io
+    # Storage redirect is disabled
+    storage_redirect: _env:STORAGE_REDIRECT
+    # Token auth is enabled (if NOT standalone)
+    disable_token_auth: _env:DISABLE_TOKEN_AUTH
+    # No priv key
+    privileged_key: _env:PRIVILEGED_KEY
+    # No search backend
+    search_backend: _env:SEARCH_BACKEND
+    # SQLite search backend
+    sqlalchemy_index_database: _env:SQLALCHEMY_INDEX_DATABASE:sqlite:////tmp/docker-registry.db
+
+    # cache:
+    #     host: _env:CACHE_REDIS_HOST:localhost
+    #     port: _env:CACHE_REDIS_PORT:6379
+    #     db: 0
+    #     password: _env:CACHE_REDIS_PASSWORD
+
+    # Enabling LRU cache for small files
+    # This speeds up read/write on small files
+    # when using a remote storage backend (like S3).
+    # cache_lru:
+    #     host: _env:CACHE_LRU_REDIS_HOST:localhost
+    #     port: _env:CACHE_LRU_REDIS_PORT:6379
+    #     db: 0
+    #     password: _env:CACHE_LRU_REDIS_PASSWORD
+
+s3: &s3
+    <<: *common
+    storage: s3
+    s3_region: _env:AWS_REGION
+    s3_bucket: _env:AWS_BUCKET
+    boto_bucket: _env:AWS_BUCKET
+    storage_path: _env:STORAGE_PATH:/registry
+    s3_encrypt: _env:AWS_ENCRYPT:true
+    s3_secure: _env:AWS_SECURE:true
+    s3_access_key: _env:AWS_KEY
+    s3_secret_key: _env:AWS_SECRET
